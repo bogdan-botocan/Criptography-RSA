@@ -20,6 +20,19 @@ namespace Cryptography_RSA
         }
     }
 
+    public class KeyNotSetException: ApplicationException
+    { 
+        public KeyNotSetException() : base()
+        {
+
+        }
+
+        public KeyNotSetException(string Message) : base()
+        {
+
+        }
+    }
+
     public static class Controller
     {
         public static BigInteger P { get; private set; }
@@ -32,21 +45,42 @@ namespace Cryptography_RSA
 
         private const int _Base = 27;
 
-        private static RsaKey _KeyPair;
+        private static PublicKey _PublicKey;
+        private static PrivateKey _PrivateKey;
+        private static Boolean _PublicKeySet = false;
+        private static Boolean _PrivateKeySet = false;
 
         private static string _Alphabet = " abcdefghijklmnopqrstuvwxyz";
 
         private static int _PlainTextCharsPerBlock;
         private static int _CypherTextBlocks;
 
+        public static void SetPublicKey(PublicKey Key, int CharsPerBlock)
+        {
+            _PublicKey = Key;
+            _PlainTextCharsPerBlock = CharsPerBlock;
+            _PublicKeySet = true;
+        }
+
+        public static void SetPrivateKey(PrivateKey Key)
+        {
+            _PrivateKey = Key;
+            _PrivateKeySet = true;
+        }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="Text"></param>
         /// <returns></returns>
-        public static string Encrypt(string Text)
+        public static string EncryptWithKeyAndInfo(string Text)
         {
             Text = Text.ToLower().Trim();
+
+            if (!_PublicKeySet)
+            {
+                throw KeyNotSetException("Please set public key before encrypting!");
+            }
 
             _ValidateInputText(Text);
 
@@ -62,7 +96,7 @@ namespace Cryptography_RSA
 
             foreach (var item in bigIntBlocks)
             {
-                encryptedBlocks.Add(BigInteger.ModPow(item, E, N));
+                encryptedBlocks.Add(BigInteger.ModPow(item, _PublicKey.E, _PublicKey.N));
             }
 
             return _PostprocessEncryptedBlocks(encryptedBlocks);
@@ -171,7 +205,7 @@ namespace Cryptography_RSA
                 BigInteger.Subtract(Q, BigInteger.One));
 
             // randomly select 1 < e < Phi(n)
-            //E = Number.GetPrimeNumber(1, Phi)
+            E = Number.GetPrimeNumber(1, Phi)
 
             // compute d = e ^ -1 mod phi
             D = BigInteger.ModPow(E, BigInteger.MinusOne, Phi);
@@ -184,7 +218,9 @@ namespace Cryptography_RSA
 
             RsaKey key = new RsaKey(publicKey, privateKey);
 
-            _KeyPair = key;
+            _PrivateKeySet = _PrivateKeySet = true;
+            _PublicKey = publicKey;
+            _PrivateKey = privateKey;
 
             return key;
         }
