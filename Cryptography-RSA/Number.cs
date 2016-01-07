@@ -19,7 +19,7 @@ namespace Cryptography_RSA
         /// <returns> A BigInteger value with Length number of digits </returns>
         public static BigInteger GetPrimeNumber(int Length)
         {
-            Random random = new Random();
+            random = new Random();
             byte[] data = new byte[Length];
             random.NextBytes(data);
 
