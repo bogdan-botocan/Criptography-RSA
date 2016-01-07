@@ -9,10 +9,13 @@ namespace Cryptography_RSA
 {
     public class RsaKey
     {
-        public BigInteger Value { get; set; }
-        public RsaKey(BigInteger Value)
+        public PublicKey Public { get; set; }
+        public PrivateKey Private { get; set; }
+
+        public RsaKey(PublicKey Public, PrivateKey Private)
         {
-            this.Value = Value;
+            this.Private = Private;
+            this.Public = Public;
         }
     }
 }

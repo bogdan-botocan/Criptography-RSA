@@ -19,7 +19,7 @@ namespace Cryptography_RSA
 
         private const int _Base = 27;
 
-        private static KeyValuePair<KeyValuePair<RsaKey, RsaKey>, RsaKey> _KeyPair;
+        private static RsaKey _KeyPair;
 
         /// <summary>
         /// 
@@ -44,7 +44,7 @@ namespace Cryptography_RSA
         /// <summary>
         /// This should not return void
         /// </summary>
-        public static KeyValuePair<KeyValuePair<RsaKey, RsaKey>, RsaKey> GenerateKeyPair(int K, int L)
+        public static RsaKey GenerateKeyPair(int K, int L)
         {
             // generate 2 random prime numbers
             P = Number.GetPrimeNumber((K + L) / 2);
@@ -64,18 +64,16 @@ namespace Cryptography_RSA
             D = BigInteger.ModPow(E, BigInteger.MinusOne, Phi);
 
             // public key = (n, e)
-            KeyValuePair<RsaKey, RsaKey> publicKey = new KeyValuePair<RsaKey, RsaKey>(
-                new RsaKey(N), new RsaKey(E));
+            PublicKey publicKey = new PublicKey(N, E);
 
             // private key = d
-            RsaKey privateKey = new RsaKey(E);
+            PrivateKey privateKey = new PrivateKey(D);
 
-            KeyValuePair<KeyValuePair<RsaKey, RsaKey>, RsaKey> keyPair = 
-                new KeyValuePair<KeyValuePair<RsaKey, RsaKey>, RsaKey>(publicKey, privateKey);
+            RsaKey key = new RsaKey(publicKey, privateKey);
 
-            _KeyPair = keyPair;
+            _KeyPair = key;
 
-            return keyPair;
+            return key;
         }
     }
 }
