@@ -10,7 +10,7 @@ namespace Cryptography_RSA
     public static class Number
     {
         // private fields
-        private static Random random;
+        private static Random _Random;
 
         /// <summary>
         /// Generates a large prime number
