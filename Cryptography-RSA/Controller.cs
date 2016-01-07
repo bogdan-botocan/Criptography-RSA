@@ -9,8 +9,17 @@ namespace Cryptography_RSA
 {
     public static class Controller
     {
-        public static BigInteger P { get; }
-        public static BigInteger Q { get; }
+        public static BigInteger P { get; private set; }
+        public static BigInteger Q { get; private set; }
+        public static BigInteger N { get; private set; }
+        public static BigInteger Phi { get; private set; }
+
+        private static BigInteger E;// { private get; private set; }
+        private static BigInteger D;
+
+        private const int _Base = 27;
+
+        private static KeyValuePair<KeyValuePair<RsaKey, RsaKey>, RsaKey> _KeyPair;
 
         /// <summary>
         /// 
@@ -35,9 +44,38 @@ namespace Cryptography_RSA
         /// <summary>
         /// This should not return void
         /// </summary>
-        public static KeyValuePair<RsaKey, RsaKey> GenerateKeyPair()
+        public static KeyValuePair<KeyValuePair<RsaKey, RsaKey>, RsaKey> GenerateKeyPair(int K, int L)
         {
-            throw new NotImplementedException();
+            // generate 2 random prime numbers
+            P = Number.GetPrimeNumber((K + L) / 2);
+            Q = Number.GetPrimeNumber((K + L) / 2);
+            
+            // compute n = pq
+            N = BigInteger.Multiply(P, Q);
+
+            // compute Phi(n) = (p - 1)(q - 1)
+            Phi = BigInteger.Multiply(BigInteger.Subtract(P, BigInteger.One), 
+                BigInteger.Subtract(Q, BigInteger.One));
+
+            // randomly select 1 < e < Phi(n)
+            //E = Number.GetPrimeNumber(1, Phi)
+
+            // compute d = e ^ -1 mod phi
+            D = BigInteger.ModPow(E, BigInteger.MinusOne, Phi);
+
+            // public key = (n, e)
+            KeyValuePair<RsaKey, RsaKey> publicKey = new KeyValuePair<RsaKey, RsaKey>(
+                new RsaKey(N), new RsaKey(E));
+
+            // private key = d
+            RsaKey privateKey = new RsaKey(E);
+
+            KeyValuePair<KeyValuePair<RsaKey, RsaKey>, RsaKey> keyPair = 
+                new KeyValuePair<KeyValuePair<RsaKey, RsaKey>, RsaKey>(publicKey, privateKey);
+
+            _KeyPair = keyPair;
+
+            return keyPair;
         }
     }
 }
