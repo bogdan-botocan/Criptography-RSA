@@ -218,7 +218,7 @@ namespace Cryptography_RSA
 
             RsaKey key = new RsaKey(publicKey, privateKey);
 
-            _PrivateKeySet = _PrivateKeySet = true;
+            _PrivateKeySet = _PublicKeySet = true;
             _PublicKey = publicKey;
             _PrivateKey = privateKey;
 
