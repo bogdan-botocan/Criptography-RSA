@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,6 +9,9 @@ namespace Cryptography_RSA
 {
     public static class Controller
     {
+        public static BigInteger P { get; }
+        public static BigInteger Q { get; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -31,7 +35,7 @@ namespace Cryptography_RSA
         /// <summary>
         /// This should not return void
         /// </summary>
-        public static void GenerateKeyPair()
+        public static KeyValuePair<RsaKey, RsaKey> GenerateKeyPair()
         {
             throw new NotImplementedException();
         }
