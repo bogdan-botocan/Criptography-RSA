@@ -47,6 +47,9 @@ namespace Cryptography_RSA
         public static string Encrypt(string Text)
         {
             _ValidateInputText(Text);
+
+            List<string> blocks = _SplitTextInBlocks(Text, _PlainTextBlocks);
+
             throw new NotImplementedException();
         }
 
@@ -69,6 +72,29 @@ namespace Cryptography_RSA
                     throw new InvalidTextException("Unsupported character: " + item.ToString());
                 }
             }
+        }
+
+        private static List<string> _SplitTextInBlocks(string Text, int CharsPerBlock)
+        {
+            List<string> blocks = new List<string>();
+
+            // pad the text
+            if (Text.Length % CharsPerBlock != 0)
+            {
+                int charsToAdd = Text.Length % CharsPerBlock;
+
+                for (int i = 0; i < charsToAdd; i++)
+                {
+                    Text += _Alphabet[0];
+                }
+            }
+
+            for (int i = 0; i < Text.Length; i += CharsPerBlock)
+            {
+                blocks.Add(Text.Substring(i, CharsPerBlock));
+            }
+
+            return blocks;
         }
 
         /// <summary>
