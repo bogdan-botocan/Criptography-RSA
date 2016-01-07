@@ -7,16 +7,23 @@ using System.Threading.Tasks;
 
 namespace Cryptography_RSA
 {
-    public class Number
+    public static class Number
     {
+        // private fields
+        private static Random random;
+
         /// <summary>
         /// Generates a large prime number
         /// </summary>
         /// <param name="Length"> Number of digits of number to generate </param>
         /// <returns> A BigInteger value with Length number of digits </returns>
-        public BigInteger GetPrimeNumber(int Length)
+        public static BigInteger GetPrimeNumber(int Length)
         {
-            throw new NotImplementedException();
+            Random random = new Random();
+            byte[] data = new byte[Length];
+            random.NextBytes(data);
+
+            return new BigInteger(data);
         }
     }
 }
