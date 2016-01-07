@@ -46,17 +46,26 @@ namespace Cryptography_RSA
         /// <returns></returns>
         public static string Encrypt(string Text)
         {
+            Text = Text.ToLower().Trim();
+
             _ValidateInputText(Text);
 
             List<string> blocks = _SplitTextInBlocks(Text, _PlainTextCharsPerBlock);
             List<BigInteger> bigIntBlocks = new List<BigInteger>();
+            List<BigInteger> encryptedBlocks = new List<BigInteger>();
 
+            /// TODO: merge the foreaches
             foreach (var item in blocks)
             {
                 bigIntBlocks.Add(_PreprocessString(item));
             }
 
-            throw new NotImplementedException();
+            foreach (var item in bigIntBlocks)
+            {
+                encryptedBlocks.Add(BigInteger.ModPow(item, E, N));
+            }
+
+            return _PostprocessEncryptedBlocks(encryptedBlocks);
         }
 
         /// <summary>
@@ -121,6 +130,28 @@ namespace Cryptography_RSA
             }
 
             return nr;
+        }
+
+        private static string _PostprocessEncryptedBlocks(List<BigInteger> Blocks)
+        {
+            Dictionary<int, char> bigIntegerToChar = new Dictionary<int, char>();
+
+            for (int i = 0; i < _Alphabet.Length; i++)
+            {
+                bigIntegerToChar.Add(i, _Alphabet.ElementAt(i));
+            }
+
+            string text = "";
+
+            foreach (var item in Blocks)
+            {
+                foreach (var item2 in item.ToString())
+                {
+                    text += bigIntegerToChar[item2];
+                }
+            }
+
+            return text;
         }
 
         /// <summary>
