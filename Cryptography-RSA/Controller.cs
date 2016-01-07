@@ -73,13 +73,13 @@ namespace Cryptography_RSA
         /// </summary>
         /// <param name="Text"></param>
         /// <returns></returns>
-        public static string EncryptWithKeyAndInfo(string Text)
+        public static string Encrypt(string Text)
         {
             Text = Text.ToLower().Trim();
 
             if (!_PublicKeySet)
             {
-                throw KeyNotSetException("Please set public key before encrypting!");
+                throw new KeyNotSetException("Please set public key before encrypting!");
             }
 
             _ValidateInputText(Text);
@@ -205,7 +205,7 @@ namespace Cryptography_RSA
                 BigInteger.Subtract(Q, BigInteger.One));
 
             // randomly select 1 < e < Phi(n)
-            E = Number.GetPrimeNumber(1, Phi)
+            E = Number.GetRandomNumberInIntervalGcdedWithNumberIsOne(BigInteger.One, Phi, N);
 
             // compute d = e ^ -1 mod phi
             D = BigInteger.ModPow(E, BigInteger.MinusOne, Phi);
