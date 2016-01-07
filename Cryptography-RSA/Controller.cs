@@ -208,7 +208,7 @@ namespace Cryptography_RSA
             E = Number.GetRandomNumberInIntervalGcdedWithNumberIsOne(BigInteger.One, Phi, N);
 
             // compute d = e ^ -1 mod phi
-            D = BigInteger.ModPow(E, BigInteger.MinusOne, Phi);
+            D = BigInteger.ModPow(E, Phi - 1, Phi);
 
             // public key = (n, e)
             PublicKey publicKey = new PublicKey(N, E);
