@@ -7,6 +7,19 @@ using System.Threading.Tasks;
 
 namespace Cryptography_RSA
 {
+    public class InvalidTextException: ApplicationException
+    {
+        public InvalidTextException() : base()
+        {
+
+        }
+
+        public InvalidTextException(string Message): base()
+        {
+
+        }
+    }
+
     public static class Controller
     {
         public static BigInteger P { get; private set; }
@@ -21,6 +34,11 @@ namespace Cryptography_RSA
 
         private static RsaKey _KeyPair;
 
+        private static string _Alphabet = " abcdefghijklmnopqrstuvwxyz";
+
+        private static int _PlainTextBlocks;
+        private static int _CypherTextBlocks;
+
         /// <summary>
         /// 
         /// </summary>
@@ -28,6 +46,7 @@ namespace Cryptography_RSA
         /// <returns></returns>
         public static string Encrypt(string Text)
         {
+            _ValidateInputText(Text);
             throw new NotImplementedException();
         }
 
@@ -39,6 +58,17 @@ namespace Cryptography_RSA
         public static string Decrypt(string Text)
         {
             throw new NotImplementedException();
+        }
+
+        private static void _ValidateInputText(string Text)
+        {
+            foreach (var item in Text.ToLower())
+            {
+                if (!_Alphabet.Contains(item))
+                {
+                    throw new InvalidTextException("Unsupported character: " + item.ToString());
+                }
+            }
         }
 
         /// <summary>
