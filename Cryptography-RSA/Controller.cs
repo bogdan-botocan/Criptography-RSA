@@ -36,7 +36,7 @@ namespace Cryptography_RSA
 
         private static string _Alphabet = " abcdefghijklmnopqrstuvwxyz";
 
-        private static int _PlainTextBlocks;
+        private static int _PlainTextCharsPerBlock;
         private static int _CypherTextBlocks;
 
         /// <summary>
@@ -48,7 +48,13 @@ namespace Cryptography_RSA
         {
             _ValidateInputText(Text);
 
-            List<string> blocks = _SplitTextInBlocks(Text, _PlainTextBlocks);
+            List<string> blocks = _SplitTextInBlocks(Text, _PlainTextCharsPerBlock);
+            List<BigInteger> bigIntBlocks = new List<BigInteger>();
+
+            foreach (var item in blocks)
+            {
+                bigIntBlocks.Add(_PreprocessString(item));
+            }
 
             throw new NotImplementedException();
         }
@@ -95,6 +101,26 @@ namespace Cryptography_RSA
             }
 
             return blocks;
+        }
+
+        private static BigInteger _PreprocessString(string Text)
+        {
+            Dictionary<char, BigInteger> textToBigInteger = new Dictionary<char, BigInteger>();
+
+            for (int i = 0; i < _Alphabet.Length; i++)
+            {
+                textToBigInteger.Add(_Alphabet.ElementAt(i), i);
+            }
+
+            BigInteger nr = new BigInteger();
+
+            /// TODO: check this
+            for (int i = 0; i < Text.Length; i++)
+            {
+                nr += textToBigInteger[Text.ElementAt(i)] * BigInteger.Pow(_Alphabet.Length, Text.Length - i);
+            }
+
+            return nr;
         }
 
         /// <summary>
