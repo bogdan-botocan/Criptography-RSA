@@ -53,12 +53,13 @@ namespace Cryptography_RSA
         private static string _Alphabet = " abcdefghijklmnopqrstuvwxyz";
 
         private static int _PlainTextCharsPerBlock;
-        private static int _CypherTextBlocks;
+        private static int _CipherCharactersPerBlock;
 
-        public static void SetPublicKey(PublicKey Key, int CharsPerBlock)
+        public static void SetPublicKey(PublicKey Key, int CharsPerBlockInput, int CharsPerBlockOutput)
         {
             _PublicKey = Key;
-            _PlainTextCharsPerBlock = CharsPerBlock;
+            _PlainTextCharsPerBlock = CharsPerBlockInput;
+            _CipherCharactersPerBlock = CharsPerBlockOutput;
             _PublicKeySet = true;
         }
 
@@ -171,19 +172,22 @@ namespace Cryptography_RSA
         private static string _PostprocessEncryptedBlocks(List<BigInteger> Blocks)
         {
             Dictionary<int, char> bigIntegerToChar = new Dictionary<int, char>();
-
+            
             for (int i = 0; i < _Alphabet.Length; i++)
             {
                 bigIntegerToChar.Add(i, _Alphabet.ElementAt(i));
             }
 
-            string text = "";
-
-            foreach (var item in Blocks)
+            string text = string.Empty;
+            foreach (BigInteger block in Blocks)
             {
-                foreach (var item2 in item.ToString())
+                BigInteger tempBlock = block;
+                for (int i = _CipherCharactersPerBlock - 1; i >= 0; i--)
                 {
-                    text += bigIntegerToChar[int.Parse(item2.ToString())];
+                    BigInteger pow = BigInteger.Pow(_Alphabet.Length, i);
+                    int element = (int)(tempBlock / pow);
+                    text += bigIntegerToChar[element];
+                    tempBlock -= pow * element;
                 }
             }
 
@@ -225,7 +229,7 @@ namespace Cryptography_RSA
             _PublicKey = publicKey;
             _PrivateKey = privateKey;
             _PlainTextCharsPerBlock = K;
-            _CypherTextBlocks = L;
+            _CipherCharactersPerBlock = L;
 
             return key;
         }
