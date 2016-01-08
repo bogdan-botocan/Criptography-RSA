@@ -221,6 +221,8 @@ namespace Cryptography_RSA
             _PrivateKeySet = _PublicKeySet = true;
             _PublicKey = publicKey;
             _PrivateKey = privateKey;
+            _PlainTextCharsPerBlock = K;
+            _CypherTextBlocks = L;
 
             return key;
         }
