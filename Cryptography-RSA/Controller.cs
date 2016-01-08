@@ -130,7 +130,7 @@ namespace Cryptography_RSA
             // pad the text
             if (Text.Length % CharsPerBlock != 0)
             {
-                int charsToAdd = Text.Length % CharsPerBlock;
+                int charsToAdd = CharsPerBlock - Text.Length % CharsPerBlock;
 
                 for (int i = 0; i < charsToAdd; i++)
                 {
@@ -160,8 +160,10 @@ namespace Cryptography_RSA
             /// TODO: check this
             for (int i = 0; i < Text.Length; i++)
             {
-                nr += textToBigInteger[Text.ElementAt(i)] * BigInteger.Pow(_Alphabet.Length, Text.Length - i);
+                nr += textToBigInteger[Text.ElementAt(i)] * BigInteger.Pow(_Alphabet.Length, Text.Length - i - 1);
             }
+
+            Console.WriteLine(nr.ToString());
 
             return nr;
         }
@@ -181,7 +183,7 @@ namespace Cryptography_RSA
             {
                 foreach (var item2 in item.ToString())
                 {
-                    text += bigIntegerToChar[item2];
+                    text += bigIntegerToChar[int.Parse(item2.ToString())];
                 }
             }
 
@@ -208,7 +210,8 @@ namespace Cryptography_RSA
             E = Number.GetRandomNumberInIntervalGcdedWithNumberIsOne(BigInteger.One, Phi, N);
 
             // compute d = e ^ -1 mod phi
-            D = BigInteger.ModPow(E, Phi - 1, Phi);
+            //D = BigInteger.ModPow(E, Phi - 1, Phi);
+            D = Number.ModInverse(E, Phi);
 
             // public key = (n, e)
             PublicKey publicKey = new PublicKey(N, E);

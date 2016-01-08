@@ -38,6 +38,11 @@ namespace Cryptography_RSA
         /// <returns></returns>
         public static bool IsPrime(BigInteger Number)
         {
+            if(Number < 0)
+            {
+                return false;
+            }
+
             if(Number == 2)
             {
                 return true;

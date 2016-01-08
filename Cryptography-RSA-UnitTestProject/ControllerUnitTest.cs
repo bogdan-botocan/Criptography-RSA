@@ -14,7 +14,9 @@ namespace Cryptography_RSA_UnitTestProject
         [TestMethod]
         public void EncryptTestMethod()
         {
-            Controller.GenerateKeyPair(5, 8);
+            ///Controller.GenerateKeyPair(5, 8);
+            Controller.SetPublicKey(new PublicKey(new System.Numerics.BigInteger(1643),
+                new System.Numerics.BigInteger(67)), 2);
             Assert.AreEqual("ayx rlagabar", Controller.Encrypt("algebra"));
         }
     }

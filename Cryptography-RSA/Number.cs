@@ -23,9 +23,8 @@ namespace Cryptography_RSA
             do
             {
                 data = new byte[Length];
-                data[0] = 0;
                 _Random.NextBytes(data);
-            } while (MillerRabin.IsPrime(new BigInteger(data)));
+            } while (!MillerRabin.IsPrime(new BigInteger(data)));
 
             return new BigInteger(data);
         }
@@ -45,6 +44,23 @@ namespace Cryptography_RSA
             }
 
             throw new Exception("Esti retardat!");
+        }
+
+        public static BigInteger ModInverse(BigInteger a, BigInteger n)
+        {
+            BigInteger i = n, v = 0, d = 1;
+            while (a > 0)
+            {
+                BigInteger t = i / a, x = a;
+                a = i % x;
+                i = x;
+                x = d;
+                d = v - t * x;
+                v = x;
+            }
+            v %= n;
+            if (v < 0) v = (v + n) % n;
+            return v;
         }
     }
 }
