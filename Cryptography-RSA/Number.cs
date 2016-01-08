@@ -17,15 +17,18 @@ namespace Cryptography_RSA
         /// </summary>
         /// <param name="Length"> Number of digits of number to generate </param>
         /// <returns> A BigInteger value with Length number of digits </returns>
-        public static BigInteger GetPrimeNumber(int Length)
+        public static BigInteger GetPrimeNumberInInterval(int K, int L, int AlphabetSize)
         {
+            int twentySevenToK = BigInteger.Pow(AlphabetSize, K).ToByteArray().Length;
+            int twentySevenToL = BigInteger.Pow(AlphabetSize, L).ToByteArray().Length;
+
             byte[] data;
             do
             {
-                data = new byte[Length];
+                data = new byte[_Random.Next(L - K) + L];
                 _Random.NextBytes(data);
             } while (!MillerRabin.IsPrime(new BigInteger(data)));
-
+            
             return new BigInteger(data);
         }
 

@@ -9,7 +9,7 @@ namespace Cryptography_RSA
 {
     public class PrivateKey
     {
-        BigInteger D { get; set; }
+        public BigInteger D { get; set; }
 
         public PrivateKey(BigInteger D)
         {

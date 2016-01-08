@@ -16,5 +16,22 @@ namespace Cryptography_RSA
         {
             InitializeComponent();
         }
+
+        private void btnGenerateKeysPair_Click(object sender, EventArgs e)
+        {
+            Controller.GenerateKeyPair(2, 3);
+            this.tbxPublicKey.Text = Controller.N.ToString();
+            this.tbxPrivateKey.Text = Controller.Q.ToString();
+        }
+
+        private void btnEncrypt_Click(object sender, EventArgs e)
+        {
+            this.tbxCipherText.Text = Controller.Encrypt(this.tbxPlainText.Text);
+        }
+
+        private void btnDecrypt_Click(object sender, EventArgs e)
+        {
+            this.tbxPlainText = this.tbxPlainText;
+        }
     }
 }

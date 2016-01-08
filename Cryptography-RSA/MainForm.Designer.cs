@@ -108,6 +108,7 @@
             this.btnGenerateKeysPair.TabIndex = 8;
             this.btnGenerateKeysPair.Text = "Generate keys pair";
             this.btnGenerateKeysPair.UseVisualStyleBackColor = true;
+            this.btnGenerateKeysPair.Click += new System.EventHandler(this.btnGenerateKeysPair_Click);
             // 
             // btnEncrypt
             // 
@@ -117,6 +118,7 @@
             this.btnEncrypt.TabIndex = 9;
             this.btnEncrypt.Text = "Encrypt";
             this.btnEncrypt.UseVisualStyleBackColor = true;
+            this.btnEncrypt.Click += new System.EventHandler(this.btnEncrypt_Click);
             // 
             // btnDecrypt
             // 
@@ -126,6 +128,7 @@
             this.btnDecrypt.TabIndex = 10;
             this.btnDecrypt.Text = "Decrypt";
             this.btnDecrypt.UseVisualStyleBackColor = true;
+            this.btnDecrypt.Click += new System.EventHandler(this.btnDecrypt_Click);
             // 
             // lblPrivateKey
             // 

@@ -110,7 +110,31 @@ namespace Cryptography_RSA
         /// <returns></returns>
         public static string Decrypt(string Text)
         {
-            throw new NotImplementedException();
+            Text = Text.ToLower().Trim();
+
+            if (!_PublicKeySet)
+            {
+                throw new KeyNotSetException("Please set private key before decrypting!");
+            }
+
+            _ValidateInputText(Text);
+
+            List<string> blocks = _SplitTextInBlocks(Text, _CipherCharactersPerBlock);
+            List<BigInteger> bigIntBlocks = new List<BigInteger>();
+            List<BigInteger> decryptedBlocks = new List<BigInteger>();
+
+            /// TODO: merge the foreaches
+            foreach (var item in blocks)
+            {
+                bigIntBlocks.Add(_PreprocessString(item));
+            }
+
+            foreach (var item in bigIntBlocks)
+            {
+                decryptedBlocks.Add(BigInteger.ModPow(item, _PrivateKey.D, _PublicKey.N));
+            }
+
+            return _PostprocessDecryptedBlocks(decryptedBlocks);
         }
 
         private static void _ValidateInputText(string Text)
@@ -194,20 +218,70 @@ namespace Cryptography_RSA
             return text;
         }
 
+        private static string _PostprocessDecryptedBlocks(List<BigInteger> Blocks)
+        {
+            Dictionary<int, char> bigIntegerToChar = new Dictionary<int, char>();
+
+            for (int i = 0; i < _Alphabet.Length; i++)
+            {
+                bigIntegerToChar.Add(i, _Alphabet.ElementAt(i));
+            }
+
+            string text = string.Empty;
+            foreach (BigInteger block in Blocks)
+            {
+                BigInteger tempBlock = block;
+                for (int i = _PlainTextCharsPerBlock - 1; i >= 0; i--)
+                {
+                    BigInteger pow = BigInteger.Pow(_Alphabet.Length, i);
+                    int element = (int)(tempBlock / pow);
+                    text += bigIntegerToChar[element];
+                    tempBlock -= pow * element;
+                }
+            }
+
+            return text;
+        }
+
         /// <summary>
         /// This should not return void
         /// </summary>
         public static RsaKey GenerateKeyPair(int K, int L)
         {
             // generate 2 random prime numbers
-            P = Number.GetPrimeNumber((K + L) / 2);
-            Q = Number.GetPrimeNumber((K + L) / 2);
-            
+            P = Number.GetPrimeNumberInInterval(K, L, _Alphabet.Length);
+            Q = Number.GetPrimeNumberInInterval(K, L, _Alphabet.Length);
+
             // compute n = pq
             N = BigInteger.Multiply(P, Q);
+            int ck = K;
+            int cl = L;
+            while (N <= BigInteger.Pow(_Alphabet.Length, K) ||
+                N >= BigInteger.Pow(_Alphabet.Length, L))
+            {
+                // generate 2 random prime numbers
+                if (N <= BigInteger.Pow(_Alphabet.Length, K))
+                {
+                    cl++;
+                    ck++;
+                }
+                else
+                {
+                    ck--;
+                    cl--;
+                }
+                P = Number.GetPrimeNumberInInterval(ck, cl, _Alphabet.Length);
+                Q = Number.GetPrimeNumberInInterval(ck, cl, _Alphabet.Length);
 
-            // compute Phi(n) = (p - 1)(q - 1)
-            Phi = BigInteger.Multiply(BigInteger.Subtract(P, BigInteger.One), 
+                // compute n = pq
+                N = BigInteger.Multiply(P, Q);
+            }
+                //{
+                //    throw new ApplicationException("N nu e in interval ");
+                //}
+
+                // compute Phi(n) = (p - 1)(q - 1)
+                Phi = BigInteger.Multiply(BigInteger.Subtract(P, BigInteger.One), 
                 BigInteger.Subtract(Q, BigInteger.One));
 
             // randomly select 1 < e < Phi(n)
