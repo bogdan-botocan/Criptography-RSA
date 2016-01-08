@@ -36,7 +36,7 @@ namespace Cryptography_RSA
             BigInteger MaxValue,
             BigInteger GcdToBeOne)
         {
-            for (BigInteger wildNumber = MinValue; wildNumber < MaxValue; wildNumber++)
+            for (BigInteger wildNumber = MinValue + 1; wildNumber < MaxValue; wildNumber++)
             {
                 if(BigInteger.GreatestCommonDivisor(wildNumber, GcdToBeOne) == 1)
                 {
